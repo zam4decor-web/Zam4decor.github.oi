@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1">
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#0b5d70"><link rel="apple-touch-icon" href="icon-192.png">
+<title>حسابات مكتب التشطيبات</title>
+<style>
+:root{--bg:#f2f5f6;--ink:#162126;--ink2:#4a5a61;--line:#e3e9ec;--p:#0b5d70;--pd:#08485a;--pc:#d6ecf2;--amber:#7a4a00;--abg:#fff0d1;--green:#14633a;--red:#a3211a}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Tahoma,sans-serif;background:var(--bg);color:var(--ink);padding-bottom:76px}
+header{display:flex;align-items:center;gap:6px;padding:10px 8px 6px;min-height:56px}
+header h1{flex:1;margin:0;font-size:21px}
+.ib{border:0;background:none;font-size:22px;min-width:44px;min-height:44px;border-radius:22px;color:var(--ink)}
+.wrap{padding:8px 16px 16px}
+.card{background:#fff;border:1px solid var(--line);border-radius:20px;margin-bottom:12px;overflow:hidden}
+.pad{padding:14px}
+.row{display:flex;align-items:center;gap:10px}
+.sp{flex:1}
+.mut{color:var(--ink2);font-size:12px}
+.lv small{display:block;color:var(--ink2);font-size:11px}
+.lv b{font-size:14px}
+.grid{display:grid;grid-template-columns:repeat(2,1fr);gap:10px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.hero{background:var(--p);color:#fff;border-radius:24px;padding:20px;margin-bottom:12px}
+.hero .big{font-size:34px;font-weight:700}
+.hero small{color:#cfe6ec}
+.bar{height:8px;border-radius:4px;background:#e4eaed;overflow:hidden}
+.bar i{display:block;height:100%;background:var(--p)}
+.li{display:flex;align-items:center;gap:12px;padding:10px 14px;min-height:58px;border-bottom:1px solid var(--line)}
+.li:last-child{border:0}
+.av{width:36px;height:36px;border-radius:50%;background:var(--pc);color:var(--pd);display:flex;align-items:center;justify-content:center;font-size:18px;flex:none}
+.btn{border:0;border-radius:26px;min-height:52px;padding:0 20px;font-size:16px;font-weight:700;background:var(--p);color:#fff;width:100%}
+.btn.o{background:#fff;color:var(--pd);border:1px solid var(--p)}
+.chip{border:1px solid #8a989e;background:#fff;border-radius:10px;min-height:40px;padding:0 14px;font-size:14px}
+.chip.on{background:var(--pc);border-color:var(--pc);color:var(--pd);font-weight:700}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.amber{color:var(--amber)}.green{color:var(--green)}.red{color:var(--red)}
+nav{position:fixed;bottom:0;left:0;right:0;display:flex;background:#fff;border-top:1px solid var(--line);z-index:5}
+nav button{flex:1;border:0;background:none;padding:8px 0 10px;font-size:11px;color:var(--ink2);min-height:60px}
+nav button span{display:block;font-size:20px}
+nav button.on{color:var(--pd);font-weight:700}
+h3{margin:14px 4px 8px;font-size:15px}
+.fab{position:fixed;left:16px;bottom:76px;width:56px;height:56px;border-radius:28px;border:0;background:var(--p);color:#fff;font-size:28px;z-index:4}
+.modal{position:fixed;inset:0;background:rgba(0,0,0,.45);display:flex;align-items:flex-end;z-index:20}
+.sheet{background:#fff;width:100%;max-height:90vh;overflow:auto;border-radius:24px 24px 0 0;padding:18px 16px 20px}
+.sheet h2{margin:0 0 12px;font-size:18px}
+label{display:block;font-size:12px;color:var(--ink2);margin:10px 0 4px}
+input,select{width:100%;min-height:48px;border:1px solid #8a989e;border-radius:6px;padding:0 12px;font-size:16px;background:#fff;font-family:inherit}
+table{width:100%;border-collapse:collapse;font-size:12px}
+th{background:var(--p);color:#fff;padding:6px 4px}
+td{border:1px solid #b8c4c9;padding:5px 4px;text-align:center}
+.tot td{background:var(--abg);font-weight:700}
+.print{display:none}
+@media print{
+ body{background:#fff;padding:0}
+ nav,header,.fab,.wrap,.modal{display:none!important}
+ .print{display:block;padding:12px}
+}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<div class="print" id="print"></div>
+<nav id="nav"></nav>
+<div id="modal"></div>
+
+<script>
+/* ---------- بيانات أولية ---------- */
+var PETTY="النثريات";
+var CATS=["أعمال المباني","الطوب (مواد)","أعمال المحارة","أعمال العزل","أعمال السلامة","مواد السباكة","مصنعية السباكة","مواد الكهرباء","مصنعية الكهرباء","جيبسون بورد","الرخام","السيراميك (مواد)","مصنعية السيراميك","الأبواب","الألوميتال","مواد النقاشة","أعمال النقاشة","أعمال الديكورات",PETTY,"العمالة"];
+var SEEDC=[["مقاول المباني","أعمال المباني","أعمال المباني"],["مقاول المحارة","أعمال المحارة","أعمال المحارة"],["مقاول العزل","أعمال العزل","أعمال العزل"],["مقاول السلامة","أعمال السلامة","أعمال السلامة"],["مقاول السباكة","مصنعية السباكة","مصنعية السباكة"],["مقاول الكهرباء","مصنعية الكهرباء","مصنعية الكهرباء"],["مقاول الجيبسون بورد","تركيب الجيبسون بورد","جيبسون بورد"],["مقاول الرخام","تركيب الرخام","الرخام"],["مقاول السيراميك","مصنعية السيراميك","مصنعية السيراميك"],["مقاول الأبواب","تركيب الأبواب","الأبواب"],["مقاول الألوميتال","الألوميتال","الألوميتال"],["مقاول النقاشة","أعمال النقاشة","أعمال النقاشة"],["مقاول الديكورات","أعمال الديكورات","أعمال الديكورات"],["مقاول العمالة","العمالة اليومية","العمالة"]];
+var SEEDS=[["مورد مواد البناء والعزل","أسمنت - رمل - مواد عزل","أعمال المباني","آجل 30 يوم"],["مورد الطوب","طوب أحمر وطوب أسمنتي","الطوب (مواد)","آجل 30 يوم"],["مورد مواد السباكة","مواد السباكة","مواد السباكة","آجل 15 يوم"],["مورد مواد الكهرباء","مواد الكهرباء","مواد الكهرباء","نقدي"],["مورد الرخام","الرخام","الرخام","دفعات"],["مورد السيراميك","السيراميك (مواد)","السيراميك (مواد)","آجل 30 يوم"],["مورد الأبواب","الأبواب","الأبواب","دفعات"],["مورد الألوميتال","الألوميتال","الألوميتال","دفعات"],["مورد أدوات السلامة","أعمال السلامة","أعمال السلامة","نقدي"],["مورد الجيبسون بورد","ألواح وهياكل جيبسون بورد","جيبسون بورد","دفعات"],["مورد مواد النقاشة","دهانات ومعجون وسيلر","مواد النقاشة","آجل 15 يوم"]];
+var METHODS=["نقدي","تحويل بنكي","شيك"];
+var KEY="finishing_accounts_v1";
+
+function seed(){
+  var n=1;
+  return {seq:100,cur:1,projects:[{id:1,office:"",project:"مشروع تشطيب",client:"",phone:"",address:"",discount:0,sup:0}],
+    contractors:SEEDC.map(function(c,i){return {id:i+1,name:c[0],trade:c[1],phone:"",cat:c[2],items:[]}}),
+    suppliers:SEEDS.map(function(s,i){return {id:i+1,name:s[0],spec:s[1],phone:"",cat:s[2],terms:s[3]}}),
+    purchases:[],payments:[],petty:[],lines:[],cpays:[]};
+}
+var db;
+try{db=JSON.parse(localStorage.getItem(KEY))}catch(e){}
+if(!db||!db.contractors)db=seed();
+if(!db.projects){
+  db.projects=[Object.assign({id:1},db.info||{office:"",project:"مشروع تشطيب",client:"",phone:"",address:"",discount:0,sup:0})];db.cur=1;delete db.info;
+  ["purchases","payments","petty","lines","cpays"].forEach(function(n){(db[n]||[]).forEach(function(x){x.p=1})});
+  db.contractors.forEach(function(c){(c.items||[]).forEach(function(x){x.p=1})});
+}
+function V(n){return db[n].filter(function(x){return x.p==db.cur})}
+function info(){return find(db.projects,db.cur)||db.projects[0]}
+function itemsOf(c){return c.items.filter(function(x){return x.p==db.cur})}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(db))}catch(e){}}
+function nid(){return ++db.seq}
+
+/* ---------- أدوات ---------- */
+function $(s){return document.querySelector(s)}
+function esc(s){return String(s==null?"":s).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c]})}
+function num(s){
+  s=String(s||"").replace(/[٠-٩]/g,function(d){return d.charCodeAt(0)-1632}).replace(/[٫]/g,".").replace(/[,٬\s]/g,"");
+  var v=parseFloat(s);return isNaN(v)?0:v}
+function money(v){v=Math.round(v*100)/100;if(!v)return "0";
+  var s=v.toLocaleString("en-US",{maximumFractionDigits:2});return v<0?"‎"+s.replace("-","−"):s}
+function pct(v){return Math.round(v*100)+"%"}
+function pct1(v){return (v*100).toFixed(1)+"%"}
+function today(){var d=new Date();return d.getFullYear()+"-"+("0"+(d.getMonth()+1)).slice(-2)+"-"+("0"+d.getDate()).slice(-2)}
+function dfmt(s){var p=String(s).split("-");return p.length==3?p[2]+"/"+p[1]+"/"+p[0]:s}
+function sum(a,f){return a.reduce(function(t,x){return t+f(x)},0)}
+function find(a,id){for(var i=0;i<a.length;i++)if(a[i].id==id)return a[i]}
+
+/* ---------- الحسابات (نفس معادلات الإكسيل) ---------- */
+function calc(){
+  var pettyT=sum(V("petty"),function(p){return p.amount});
+  var cons=db.contractors.map(function(c){
+    var its=itemsOf(c);
+    var total=sum(its,function(i){return i.qty*i.price});
+    var due=sum(its,function(i){return i.qty*i.price*i.prog});
+    var pays=V("payments").filter(function(p){return p.type=="c"&&p.payee==c.id});
+    var paid=sum(pays,function(p){return p.amount});
+    return {c:c,items:its,total:total,due:due,paid:paid,bal:due-paid,prog:total?due/total:0,pays:pays};
+  });
+  var sups=db.suppliers.map(function(s){
+    var pur=V("purchases").filter(function(p){return p.supplier==s.id});
+    var pays=V("payments").filter(function(p){return p.type=="s"&&p.payee==s.id});
+    var total=sum(pur,function(p){return p.qty*p.price}),paid=sum(pays,function(p){return p.amount});
+    return {s:s,pur:pur,pays:pays,total:total,paid:paid,rem:total-paid,ratio:total?paid/total:0};
+  });
+  var conT=sum(cons,function(x){return x.total}),supT=sum(sups,function(x){return x.total});
+  var rows=CATS.map(function(n){
+    var cc=sum(cons.filter(function(x){return x.c.cat==n}),function(x){return x.total});
+    var sc=sum(V("purchases").filter(function(p){return p.cat==n}),function(p){return p.qty*p.price});
+    if(n==PETTY)sc+=pettyT;
+    var price=sum(V("lines").filter(function(l){return l.cat==n}),function(l){return l.qty*l.price});
+    return {name:n,cost:cc+sc,price:price,profit:price-cc-sc};
+  });
+  var clientTotal=sum(V("lines"),function(l){return l.qty*l.price});
+  var clientSup=clientTotal*(info().sup||0)/100,net=clientTotal+clientSup-info().discount, recv=sum(V("cpays"),function(p){return p.amount});
+  var pc=sum(cons,function(x){return x.paid}),ps=sum(sups,function(x){return x.paid});
+  var cost=conT+supT+pettyT,spentBase=pc+ps+pettyT;
+  return {cons:cons,sups:sups,rows:rows,clientTotal:clientTotal,clientSup:clientSup,net:net,recv:recv,clientRem:net-recv,
+    cost:cost,spent:spentBase,netCash:recv-spentBase,profit:net-cost,
+    remPay:(conT-pc)+(supT-ps),profitPct:net?(net-cost)/net:0,recvPct:net?recv/net:0};
+}
+
+/* ---------- واجهة ---------- */
+var view={page:"home",id:0,filter:"all"};
+var TABS=[["home","🏠","الرئيسية"],["contractors","👷","المقاولين"],["suppliers","🚚","الموردين"],["payments","💵","المدفوعات"],["statement","📄","الكشوف"]];
+function go(p,id){view.page=p;view.id=id||0;window.scrollTo(0,0);render()}
+function back(){var m={contractor:"contractors",supplier:"suppliers",summary:"home",lines:"statement",cpays:"statement",project:"statement",pform:"payments",invoice:"suppliers"};go(m[view.page]||"home")}
+function lv(l,v,c){return '<div class="lv"><small>'+l+'</small><b class="'+(c||"")+'">'+v+'</b></div>'}
+function bar(f){return '<div class="bar"><i style="width:'+Math.max(0,Math.min(1,f))*100+'%"></i></div>'}
+function head(t,isSub,acts){return '<header>'+(isSub?'<button class="ib" onclick="back()">→</button>':'')+'<h1>'+esc(t)+'</h1>'+(acts||"")+'</header>'}
+
+function render(){
+  var R=calc(),p=view.page,h="";
+  var isTab=TABS.some(function(t){return t[0]==p});
+  $("#nav").style.display=isTab?"flex":"none";
+  $("#nav").innerHTML=TABS.map(function(t){return '<button class="'+(t[0]==p?"on":"")+'" onclick="go(\''+t[0]+'\')"><span>'+t[1]+'</span>'+t[2]+'</button>'}).join("");
+  var fn={home:pHome,summary:pSummary,contractors:pContractors,contractor:pContractor,suppliers:pSuppliers,supplier:pSupplier,payments:pPayments,pform:pPForm,invoice:pInvoice,statement:pStatement,lines:pLines,cpays:pCpays,project:pProject}[p];
+  $("#app").innerHTML=fn(R);
+  if(["home","summary","contractors","suppliers","payments","statement"].indexOf(p)>=0){var hd=$("#app header");if(hd)hd.insertAdjacentHTML("afterend",projSel())}
+}
+
+function pHome(R){
+  var dues=[];
+  R.cons.forEach(function(x){if(x.bal>0)dues.push({n:x.c.name,s:"مقاول · "+x.c.trade,a:x.bal,go:"contractor",id:x.c.id})});
+  R.sups.forEach(function(x){if(x.rem>0)dues.push({n:x.s.name,s:"مورد · "+x.s.terms,a:x.rem,go:"supplier",id:x.s.id})});
+  dues.sort(function(a,b){return b.a-a.a});dues=dues.slice(0,3);
+  return head(info().project||"مشروع تشطيب",false,'<button class="ib" onclick="go(\'project\')">⚙️</button>')+'<div class="wrap">'+
+  '<div class="hero"><small>صافي النقدية (المقبوض − المصروف)</small><div class="big">'+money(R.netCash)+' <small>ج.م</small></div><hr style="border:0;border-top:1px solid rgba(255,255,255,.25);margin:12px 0"><div class="grid"><div><small>المقبوض من العميل</small><br><b>'+money(R.recv)+'</b></div><div><small>المصروف فعلياً</small><br><b>'+money(R.spent)+'</b></div></div></div>'+
+  '<div class="grid" style="margin-bottom:10px">'+
+  '<div class="card pad lv"><small>قيمة أعمال العميل</small><b style="font-size:20px">'+money(R.net)+'</b><small>صافي بعد الخصم</small></div>'+
+  '<div class="card pad lv"><small>المتبقي على العميل</small><b style="font-size:20px">'+money(R.clientRem)+'</b><small>مقبوض '+pct(R.recvPct)+'</small></div>'+
+  '<div class="card pad lv"><small>الربح المتوقع</small><b class="green" style="font-size:20px">'+money(R.profit)+'</b><small>هامش '+pct1(R.profitPct)+'</small></div>'+
+  '<div class="card pad lv"><small>المتبقي للصرف</small><b class="amber" style="font-size:20px">'+money(R.remPay)+'</b><small>مقاولين + موردين</small></div></div>'+
+  '<div class="grid3" style="margin-bottom:12px"><button class="chip on" style="min-height:64px" onclick="go(\'pform\')">💵<br>دفعة جديدة</button><button class="chip on" style="min-height:64px" onclick="go(\'invoice\')">🧾<br>فاتورة توريد</button><button class="chip on" style="min-height:64px" onclick="go(\'summary\')">📊<br>ملخص الأرباح</button></div>'+
+  '<h3>أرصدة مستحقة للصرف</h3><div class="card">'+(dues.length?dues.map(function(d){return '<div class="li" onclick="go(\''+d.go+'\','+d.id+')"><div class="av">'+(d.go=="supplier"?"🚚":"👷")+'</div><div class="sp"><b>'+esc(d.n)+'</b><div class="mut">'+esc(d.s)+'</div></div><b class="amber">'+money(d.a)+'</b></div>'}).join(""):'<div class="pad mut">لا توجد أرصدة مستحقة حالياً</div>')+'</div></div>';
+}
+
+function pSummary(R){
+  var rows=R.rows.filter(function(r){return r.cost||r.price});
+  var cw=R.net>0?Math.min(.98,Math.max(.02,R.cost/R.net)):.5;
+  return head("ملخص المشروع",true)+'<div class="wrap"><div class="card pad"><div class="grid3">'+lv("إجمالي التكلفة",money(R.cost))+lv("سعر العميل",money(R.net))+lv("الربح المتوقع",money(R.profit),"green")+'</div><div style="display:flex;height:10px;border-radius:5px;overflow:hidden;margin:12px 0 6px"><i style="flex:'+cw+';background:var(--p)"></i><i style="flex:'+(1-cw)+';background:#5bc186"></i></div><div class="row mut"><span class="sp">التكلفة '+pct(cw)+'</span><span>الربح '+pct(1-cw)+'</span></div></div>'+
+  '<h3>التكلفة مقابل سعر العميل حسب البند</h3><div class="card">'+(rows.length?rows.map(function(r){return '<div class="li"><div class="sp"><b>'+esc(r.name)+'</b><div class="mut">تكلفة '+money(r.cost)+' · عميل '+money(r.price)+'</div></div><div style="text-align:left"><b class="'+(r.profit>=0?"green":"red")+'">'+money(r.profit)+'</b>'+(r.price?'<div class="mut">'+pct1(r.profit/r.price)+'</div>':'')+'</div></div>'}).join(""):'<div class="pad mut">لا توجد بيانات بعد</div>')+'</div></div>';
+}
+
+function pContractors(R){
+  return head("المقاولين",false,'<button class="ib" onclick="fContractor()">＋</button>')+'<div class="wrap">'+R.cons.map(function(x){
+    return '<div class="card pad" onclick="go(\'contractor\','+x.c.id+')"><div class="row"><div class="av">👷</div><div class="sp"><b>'+esc(x.c.name)+'</b><div class="mut">'+esc(x.c.trade)+' · '+esc(x.c.cat)+'</div></div><b class="green">'+pct(x.prog)+'</b></div><div style="margin:8px 0">'+bar(x.prog)+'</div><div class="grid3" style="grid-template-columns:repeat(4,1fr)">'+lv("العقد",money(x.total))+lv("المستحق",money(x.due))+lv("المدفوع",money(x.paid))+lv("الرصيد",money(x.bal),x.bal>0?"amber":"green")+'</div></div>'}).join("")+'</div>';
+}
+
+function pContractor(R){
+  var x=R.cons.filter(function(a){return a.c.id==view.id})[0];
+  if(!x)return head("المقاول",true);
+  var c=x.c;
+  return head(c.name,true,(c.phone?'<a class="ib" style="text-decoration:none;text-align:center;line-height:44px" href="tel:'+esc(c.phone)+'">📞</a>':'')+'<button class="ib" onclick="fContractor('+c.id+')">✏️</button><button class="ib" onclick="del(\'contractor\','+c.id+')">🗑️</button>')+'<div class="wrap">'+
+  '<div class="card pad"><div class="mut">'+esc(c.trade)+' · '+esc(c.cat)+'</div><div class="grid" style="margin:10px 0">'+lv("قيمة العقد",money(x.total))+lv("المستحق بالإنجاز",money(x.due))+lv("المدفوع",money(x.paid))+lv("الرصيد المستحق",money(x.bal),x.bal>0?"amber":"green")+'</div>'+bar(x.prog)+'<div class="mut" style="margin-top:6px">نسبة الإنجاز '+pct(x.prog)+'</div></div>'+
+  '<div class="row"><h3 class="sp">بنود الأعمال</h3><button class="ib" onclick="fItem('+c.id+')">＋</button></div><div class="card">'+(x.items.length?x.items.map(function(i){return '<div class="li"><div class="sp"><b>'+esc(i.desc)+'</b><div class="mut">'+i.qty+' '+esc(i.unit)+' × '+money(i.price)+' = '+money(i.qty*i.price)+'</div>'+bar(i.prog)+'<div class="mut" style="color:var(--pd)">إنجاز '+pct(i.prog)+' · مستحق '+money(i.qty*i.price*i.prog)+'</div></div><button class="ib" onclick="fItem('+c.id+','+i.id+')">✏️</button><button class="ib" onclick="del(\'item\','+i.id+','+c.id+')">🗑️</button></div>'}).join(""):'<div class="pad mut">لا توجد بنود. أضف بنود العقد لحساب المستحق.</div>')+'</div>'+
+  '<h3>الدفعات المسددة</h3>'+payList(x.pays)+
+  '<button class="btn" onclick="view.ptype=\'c\';view.ppayee='+c.id+';go(\'pform\')">تسجيل دفعة</button></div>';
+}
+
+function payList(pays){
+  return '<div class="card">'+(pays.length?pays.slice().sort(function(a,b){return a.date<b.date?1:-1}).map(function(p){return '<div class="li"><div class="sp"><b>'+money(p.amount)+'</b><div class="mut">'+dfmt(p.date)+' · '+esc(p.method)+(p.receipt?' · إيصال '+esc(p.receipt):'')+'</div></div><button class="ib" onclick="del(\'pay\','+p.id+')">🗑️</button></div>'}).join(""):'<div class="pad mut">لا توجد دفعات بعد</div>')+'</div>';
+}
+
+function pSuppliers(R){
+  return head("الموردين",false,'<button class="ib" onclick="fSupplier()">＋</button>')+'<div class="wrap">'+R.sups.map(function(x){
+    return '<div class="card pad" onclick="go(\'supplier\','+x.s.id+')"><div class="row"><div class="av">🚚</div><div class="sp"><b>'+esc(x.s.name)+'</b><div class="mut">'+esc(x.s.spec)+' · '+esc(x.s.terms)+'</div></div></div><div style="margin:8px 0">'+bar(x.ratio)+'</div><div class="grid3">'+lv("التوريدات",money(x.total))+lv("المسدد",money(x.paid))+lv("المتبقي",money(x.rem),x.rem>0?"amber":"green")+'</div></div>'}).join("")+'</div>';
+}
+
+function pSupplier(R){
+  var x=R.sups.filter(function(a){return a.s.id==view.id})[0];
+  if(!x)return head("المورد",true);
+  var s=x.s;
+  return head(s.name,true,(s.phone?'<a class="ib" style="text-decoration:none;text-align:center;line-height:44px" href="tel:'+esc(s.phone)+'">📞</a>':'')+'<button class="ib" onclick="fSupplier('+s.id+')">✏️</button><button class="ib" onclick="del(\'supplier\','+s.id+')">🗑️</button>')+'<div class="wrap">'+
+  '<div class="card pad"><div class="mut">'+esc(s.spec)+' · '+esc(s.terms)+'</div><div class="grid3" style="margin:10px 0">'+lv("التوريدات",money(x.total))+lv("المسدد",money(x.paid))+lv("المتبقي",money(x.rem),x.rem>0?"amber":"green")+'</div>'+bar(x.ratio)+'</div>'+
+  '<h3>فواتير التوريد</h3><div class="card">'+(x.pur.length?x.pur.slice().sort(function(a,b){return a.date<b.date?1:-1}).map(function(p){return '<div class="li"><div class="sp"><b>'+esc(p.item)+'</b><div class="mut">'+dfmt(p.date)+' · '+p.qty+' '+esc(p.unit)+' × '+money(p.price)+(p.inv?' · فاتورة '+esc(p.inv):'')+'</div><div class="mut" style="color:var(--pd)">'+esc(p.cat)+'</div></div><b>'+money(p.qty*p.price)+'</b><button class="ib" onclick="del(\'pur\','+p.id+')">🗑️</button></div>'}).join(""):'<div class="pad mut">لا توجد فواتير بعد</div>')+'</div>'+
+  '<h3>الدفعات المسددة</h3>'+payList(x.pays)+
+  '<div class="grid"><button class="btn o" onclick="view.isup='+s.id+';go(\'invoice\')">فاتورة توريد</button><button class="btn" onclick="view.ptype=\'s\';view.ppayee='+s.id+';go(\'pform\')">تسجيل دفعة</button></div></div>';
+}
+
+function pPayments(R){
+  var all=V("payments").map(function(p){
+    var n=p.type=="c"?(find(db.contractors,p.payee)||{}).name:(find(db.suppliers,p.payee)||{}).name;
+    return {k:"p",id:p.id,type:p.type,date:p.date,title:n||"—",sub:[p.cat,p.method,p.receipt?"إيصال "+p.receipt:""].filter(Boolean).join(" · "),amount:p.amount};
+  }).concat(V("petty").map(function(p){return {k:"n",id:p.id,type:"n",date:p.date,title:p.desc,sub:"النثريات",amount:p.amount}}));
+  var f=view.filter;
+  var shown=all.filter(function(e){return f=="all"||e.type==f}).sort(function(a,b){return a.date<b.date?1:-1});
+  var total=sum(shown,function(e){return e.amount}),days={},order=[];
+  shown.forEach(function(e){if(!days[e.date]){days[e.date]=[];order.push(e.date)}days[e.date].push(e)});
+  var chips=[["all","الكل"],["c","مقاولين"],["s","موردين"],["n","نثريات"]].map(function(c){return '<button class="chip '+(f==c[0]?"on":"")+'" onclick="view.filter=\''+c[0]+'\';render()">'+c[1]+'</button>'}).join("");
+  return head("المدفوعات",false,'<button class="ib" onclick="go(\'pform\')">＋</button>')+'<div class="wrap"><div class="chips">'+chips+'</div><div class="row" style="margin:0 4px 10px"><span class="mut sp" style="font-size:13px">إجمالي المصروف</span><b style="color:var(--pd);font-size:17px">'+money(total)+'</b></div>'+
+  (order.length?order.map(function(d){return '<div class="mut" style="margin:8px 4px 4px;font-weight:700">'+dfmt(d)+'</div><div class="card">'+days[d].map(function(e){return '<div class="li"><div class="av">'+(e.type=="c"?"👷":e.type=="s"?"🚚":"💵")+'</div><div class="sp"><b>'+esc(e.title)+'</b><div class="mut">'+esc(e.sub)+'</div></div><b>'+money(e.amount)+'</b><button class="ib" onclick="del(\''+(e.k=="p"?"pay":"petty")+'\','+e.id+')">🗑️</button></div>'}).join("")+'</div>'}).join(""):'<div class="pad mut">لا توجد دفعات</div>')+'</div>';
+}
+
+function opts(list,sel,blank){return (blank?'<option value="">'+blank+'</option>':'')+list.map(function(o){var v=o.v!=null?o.v:o,t=o.t!=null?o.t:o;return '<option value="'+esc(v)+'"'+(String(v)==String(sel)?" selected":"")+'>'+esc(t)+'</option>'}).join("")}
+
+function pPForm(R){
+  var t=view.ptype||"c",pe=view.ppayee||"";
+  var payeeSel=t=="n"?"":'<label>'+(t=="c"?"المقاول":"المورد")+'</label><select id="f_payee" onchange="view.ppayee=this.value;pfInfo()">'+opts((t=="c"?db.contractors:db.suppliers).map(function(x){return {v:x.id,t:x.name}}),pe,"— اختر —")+'</select><div class="card pad" id="pinfo" style="margin-top:10px"></div>';
+  var h=head("تسجيل دفعة",true)+'<div class="wrap"><div class="chips">'+[["c","مقاول"],["s","مورد"],["n","نثريات"]].map(function(c){return '<button class="chip '+(t==c[0]?"on":"")+'" onclick="view.ptype=\''+c[0]+'\';view.ppayee=\'\';render()">'+c[1]+'</button>'}).join("")+'</div>'+payeeSel+
+  '<label>التاريخ</label><input type="date" id="f_date" value="'+today()+'"><label>المبلغ</label><input id="f_amt" inputmode="decimal">';
+  if(t!="n")h+='<label>طريقة الدفع</label><select id="f_method">'+opts(METHODS)+'</select><label>رقم الإيصال</label><input id="f_rec" value="'+(V("payments").length+1)+'"><label>بند آخر (اختياري)</label><select id="f_cat">'+opts(CATS,"","تلقائي (حسب المستفيد)")+'</select>';
+  h+='<label>'+(t=="n"?"البيان":"ملاحظات")+'</label><input id="f_notes"><div style="height:16px"></div><button class="btn" onclick="savePay()">حفظ الدفعة</button></div>';
+  setTimeout(pfInfo,0);return h;
+}
+function pfInfo(){
+  var el=$("#pinfo");if(!el)return;var t=view.ptype||"c",id=$("#f_payee").value,R=calc(),h="";
+  if(t=="c"){var x=R.cons.filter(function(a){return a.c.id==id})[0];if(x)h='بيانات تلقائية<br><b>البند: '+esc(x.c.cat)+'</b><div class="mut">المستحق '+money(x.due)+' · المدفوع '+money(x.paid)+' · الرصيد '+money(x.bal)+'</div>'}
+  else{var y=R.sups.filter(function(a){return a.s.id==id})[0];if(y)h='بيانات تلقائية<br><b>البند: '+esc(y.s.cat)+'</b><div class="mut">التوريدات '+money(y.total)+' · المسدد '+money(y.paid)+' · المتبقي '+money(y.rem)+'</div>'}
+  el.innerHTML=h||'<span class="mut">اختر المستفيد لعرض بياناته</span>';
+}
+function savePay(){
+  var t=view.ptype||"c",amt=num($("#f_amt").value),date=$("#f_date").value||today();
+  if(amt<=0){alert("اكتب المبلغ");return}
+  if(t=="n"){db.petty.push({p:db.cur,id:nid(),date:date,desc:$("#f_notes").value||"نثريات",amount:amt})}
+  else{
+    var pid=+$("#f_payee").value;if(!pid){alert("اختر المستفيد");return}
+    var base=t=="c"?find(db.contractors,pid).cat:find(db.suppliers,pid).cat;
+    db.payments.push({p:db.cur,id:nid(),date:date,type:t,payee:pid,cat:$("#f_cat").value||base,method:$("#f_method").value,amount:amt,receipt:$("#f_rec").value,notes:$("#f_notes").value});
+  }
+  save();view.ptype="c";view.ppayee="";go("payments");
+}
+
+function pInvoice(R){
+  var sid=view.isup||"";
+  setTimeout(function(){invTot();invInfo()},0);
+  return head("فاتورة توريد",true)+'<div class="wrap"><label>المورد</label><select id="f_sup" onchange="invInfo()">'+opts(db.suppliers.map(function(s){return {v:s.id,t:s.name}}),sid,"— اختر —")+'</select><div class="card pad" id="iinfo" style="margin-top:10px"></div>'+
+  '<label>التاريخ</label><input type="date" id="f_date" value="'+today()+'"><label>الصنف / البيان</label><input id="f_item"><div class="grid3"><div><label>الوحدة</label><input id="f_unit"></div><div><label>الكمية</label><input id="f_qty" inputmode="decimal" oninput="invTot()"></div><div><label>السعر</label><input id="f_price" inputmode="decimal" oninput="invTot()"></div></div><label>رقم الفاتورة</label><input id="f_inv"><label>بند آخر (اختياري)</label><select id="f_cat">'+opts(CATS,"","تلقائي (حسب المورد)")+'</select>'+
+  '<div class="card pad" style="margin-top:12px">'+lv("إجمالي الفاتورة",'<span id="itot">0</span>')+'</div><button class="btn" onclick="saveInv()">حفظ الفاتورة</button></div>';
+}
+function invTot(){var e=$("#itot");if(e)e.textContent=money(num($("#f_qty").value)*num($("#f_price").value))}
+function invInfo(){var s=find(db.suppliers,$("#f_sup").value),e=$("#iinfo");if(e)e.innerHTML=s?'بيانات تلقائية<br><b>البند: '+esc(s.cat)+'</b>':'<span class="mut">اختر المورد</span>'}
+function saveInv(){
+  var s=find(db.suppliers,$("#f_sup").value),q=num($("#f_qty").value),p=num($("#f_price").value);
+  if(!s||!$("#f_item").value||q*p<=0){alert("أكمل المورد والصنف والكمية والسعر");return}
+  db.purchases.push({p:db.cur,id:nid(),date:$("#f_date").value||today(),supplier:s.id,cat:$("#f_cat").value||s.cat,item:$("#f_item").value,unit:$("#f_unit").value,qty:q,price:p,inv:$("#f_inv").value});
+  save();view.isup="";go("supplier",s.id);
+}
+
+function pStatement(R){
+  var i=info(),lines=R.rows.filter(function(r){return r.price>0});
+  return head("كشف العميل",false,'<button class="ib" onclick="go(\'project\')">⚙️</button>')+'<div class="wrap">'+
+  '<div class="card pad"><div class="mut">'+esc(i.office)+'</div><b style="font-size:18px">'+esc(i.client||"اسم العميل غير محدد")+'</b><div style="color:var(--pd)">'+esc(i.project)+'</div><div class="mut">'+esc(i.phone)+' '+esc(i.address)+'</div></div>'+
+  '<div class="card pad"><div class="grid">'+lv("إجمالي الأعمال",money(R.clientTotal))+(R.clientSup?lv("الإشراف "+i.sup+"%",money(R.clientSup)):"")+lv("الخصم",money(i.discount))+lv("صافي المستحق",money(R.net))+lv("المدفوع",money(R.recv),"green")+'</div><hr style="border:0;border-top:1px solid var(--line)">'+lv("المتبقي على العميل",'<span style="font-size:20px">'+money(R.clientRem)+'</span>',"amber")+'</div>'+
+  '<div class="row"><h3 class="sp">تفاصيل الأعمال</h3><button class="ib" onclick="go(\'lines\')">✏️</button></div><div class="card">'+(lines.length?lines.map(function(r){return '<div class="li"><span class="sp">'+esc(r.name)+'</span><b>'+money(r.price)+'</b></div>'}).join(""):'<div class="pad mut">أضف بنود الأعمال لعرضها في الكشف</div>')+'</div>'+
+  '<div class="row"><h3 class="sp">الدفعات المستلمة</h3><button class="ib" onclick="go(\'cpays\')">✏️</button></div><div class="card">'+(V("cpays").length?V("cpays").map(function(p){return '<div class="li"><div class="sp">'+esc(p.desc||"دفعة")+'<div class="mut">'+dfmt(p.date)+' · '+esc(p.method)+'</div></div><b class="green">'+money(p.amount)+'</b></div>'}).join(""):'<div class="pad mut">لا توجد دفعات مستلمة</div>')+'</div>'+
+  '<div class="grid"><button class="btn o" onclick="doPrint()">🖨️ طباعة / PDF</button><button class="btn" onclick="doShare()">مشاركة الكشف</button></div></div>';
+}
+
+/* كشف مطبوع */
+function printHtml(){
+  var R=calc(),i=info(),n=0;
+  var h='<div style="text-align:center"><div style="background:#0b5d70;color:#fff;padding:8px;font-size:18px;font-weight:700">كشف حساب تفصيلي للعميل</div><div style="font-size:15px;font-weight:700;margin:8px">'+esc(i.office)+'</div></div>'+
+  '<table style="margin-bottom:10px"><tr><td><b>اسم العميل</b></td><td>'+esc(i.client)+'</td><td><b>المشروع</b></td><td>'+esc(i.project)+'</td></tr><tr><td><b>الهاتف</b></td><td>'+esc(i.phone)+'</td><td><b>التاريخ</b></td><td>'+dfmt(today())+'</td></tr>'+(i.address?'<tr><td><b>العنوان</b></td><td colspan="3">'+esc(i.address)+'</td></tr>':'')+'</table>'+
+  '<table><tr><th>م</th><th>الفئة</th><th>بيان الأعمال</th><th>الوحدة</th><th>الكمية</th><th>السعر</th><th>الإجمالي</th></tr>'+V("lines").map(function(l){return '<tr><td>'+(++n)+'</td><td>'+esc(l.cat)+'</td><td>'+esc(l.desc)+'</td><td>'+esc(l.unit)+'</td><td>'+l.qty+'</td><td>'+money(l.price)+'</td><td>'+money(l.qty*l.price)+'</td></tr>'}).join("")+'<tr class="tot"><td colspan="6">إجمالي قيمة الأعمال</td><td>'+money(R.clientTotal)+'</td></tr></table>'+
+  '<table style="margin:10px 0"><tr><td>إجمالي قيمة الأعمال</td><td>'+money(R.clientTotal)+'</td></tr>'+(R.clientSup?'<tr><td>نسبة الإشراف '+i.sup+'%</td><td>'+money(R.clientSup)+'</td></tr>':'')+'<tr><td>خصم ممنوح للعميل</td><td>'+money(i.discount)+'</td></tr><tr class="tot"><td>صافي المستحق على العميل</td><td>'+money(R.net)+'</td></tr><tr><td>إجمالي ما تم دفعه</td><td>'+money(R.recv)+'</td></tr><tr class="tot"><td>المتبقي على العميل</td><td>'+money(R.clientRem)+'</td></tr></table>';
+  n=0;
+  h+='<div style="background:#0b5d70;color:#fff;padding:5px;text-align:center;font-weight:700">الدفعات المستلمة</div><table><tr><th>م</th><th>التاريخ</th><th>البيان</th><th>الطريقة</th><th>الإيصال</th><th>المبلغ</th></tr>'+V("cpays").map(function(p){return '<tr><td>'+(++n)+'</td><td>'+dfmt(p.date)+'</td><td>'+esc(p.desc)+'</td><td>'+esc(p.method)+'</td><td>'+esc(p.receipt)+'</td><td>'+money(p.amount)+'</td></tr>'}).join("")+'<tr class="tot"><td colspan="5">إجمالي المقبوض</td><td>'+money(R.recv)+'</td></tr></table>';
+  return h;
+}
+function doPrint(){$("#print").innerHTML=printHtml();
+  try{window.print()}catch(e){alert("الطباعة غير مدعومة هنا، استخدم زر المشاركة")}}
+function doShare(){
+  var R=calc(),i=info();
+  var t="كشف حساب العميل: "+(i.client||"")+"\nالمشروع: "+i.project+"\n\nإجمالي الأعمال: "+money(R.clientTotal)+(R.clientSup?"\nالإشراف "+i.sup+"%: "+money(R.clientSup):"")+"\nالخصم: "+money(i.discount)+"\nصافي المستحق: "+money(R.net)+"\nالمدفوع: "+money(R.recv)+"\nالمتبقي: "+money(R.clientRem)+"\n\nالتفاصيل:\n"+V("lines").map(function(l,k){return (k+1)+") "+l.desc+" — "+money(l.qty*l.price)}).join("\n");
+  if(navigator.share){navigator.share({title:"كشف حساب",text:t}).catch(function(){})}
+  else{window.location.href="https://wa.me/?text="+encodeURIComponent(t)}
+}
+
+function pLines(R){
+  return head("تفاصيل أعمال العميل",true,'<button class="ib" onclick="fLine()">＋</button>')+'<div class="wrap">'+(V("lines").length?V("lines").map(function(l){return '<div class="card"><div class="li"><div class="sp"><b>'+esc(l.desc)+'</b><div class="mut">'+esc(l.cat)+' · '+l.qty+' '+esc(l.unit)+' × '+money(l.price)+'</div><b style="color:var(--pd)">'+money(l.qty*l.price)+'</b></div><button class="ib" onclick="fLine('+l.id+')">✏️</button><button class="ib" onclick="del(\'line\','+l.id+')">🗑️</button></div></div>'}).join(""):'<div class="mut pad">لا توجد بنود. اضغط ＋ لإضافة أول بند.</div>')+'</div>';
+}
+function pCpays(R){
+  return head("دفعات العميل",true,'<button class="ib" onclick="fCpay()">＋</button>')+'<div class="wrap"><div class="row" style="margin:0 4px 10px"><span class="mut sp">إجمالي المقبوض</span><b class="green">'+money(R.recv)+'</b></div>'+V("cpays").map(function(p){return '<div class="card"><div class="li"><div class="sp"><b>'+esc(p.desc||"دفعة")+'</b><div class="mut">'+dfmt(p.date)+' · '+esc(p.method)+(p.receipt?' · إيصال '+esc(p.receipt):'')+'</div></div><b class="green">'+money(p.amount)+'</b><button class="ib" onclick="del(\'cpay\','+p.id+')">🗑️</button></div></div>'}).join("")+'</div>';
+}
+function pProject(R){
+  var i=info();
+  return head("بيانات المشروع",true)+'<div class="wrap"><label>اسم المكتب</label><input id="f_o" value="'+esc(i.office)+'"><label>اسم المشروع</label><input id="f_p" value="'+esc(i.project)+'"><label>اسم العميل</label><input id="f_c" value="'+esc(i.client)+'"><label>هاتف العميل</label><input id="f_t" value="'+esc(i.phone)+'"><label>عنوان المشروع</label><input id="f_a" value="'+esc(i.address)+'"><label>خصم ممنوح للعميل</label><input id="f_d" inputmode="decimal" value="'+(i.discount||"")+'"><label>نسبة الإشراف % (على إجمالي الأعمال في كشف العميل)</label><input id="f_s" inputmode="decimal" value="'+(i.sup||"")+'"><div style="height:16px"></div><button class="btn" onclick="saveProject()">حفظ</button><div style="height:12px"></div><button class="btn o" onclick="delProject()" style="color:var(--red);border-color:var(--red)">حذف هذا المشروع</button><div style="height:12px"></div><button class="btn o" onclick="backup()">نسخ البيانات احتياطياً</button><div style="height:12px"></div><button class="btn o" onclick="restore()">استعادة نسخة احتياطية</button></div>';
+}
+function saveProject(){Object.assign(info(),{office:$("#f_o").value,project:$("#f_p").value,client:$("#f_c").value,phone:$("#f_t").value,address:$("#f_a").value,discount:num($("#f_d").value),sup:num($("#f_s").value)});save();back()}
+function backup(){var s=JSON.stringify(db);
+  if(navigator.clipboard&&navigator.clipboard.writeText){navigator.clipboard.writeText(s).then(function(){alert("تم نسخ البيانات. الصقها في ملاحظات أو رسالة واحتفظ بها.")},function(){prompt("انسخ النص:",s)})}else prompt("انسخ النص:",s)}
+function restore(){var s=prompt("الصق النسخة الاحتياطية هنا:");if(!s)return;try{var d=JSON.parse(s);if(!d.contractors)throw 0;db=d;save();alert("تمت الاستعادة");go("home")}catch(e){alert("النسخة غير صالحة")}}
+
+/* ---------- المشاريع ---------- */
+function projSel(){
+  return '<div style="padding:0 16px 4px"><select id="psel" onchange="setProj(this.value)" style="font-weight:700;color:var(--pd);background:var(--pc);border-color:var(--pc)">'+db.projects.map(function(x){return '<option value="'+x.id+'"'+(x.id==db.cur?" selected":"")+'>🏗️ '+esc(x.project||"بدون اسم")+'</option>'}).join("")+'<option value="new">＋ مشروع جديد</option></select></div>';
+}
+function setProj(v){
+  if(v=="new"){
+    modal("مشروع جديد",fld("m_n","اسم المشروع","")+fld("m_c","اسم العميل",""),function(){
+      if(!$("#m_n").value.trim())return false;
+      var id=nid();db.projects.push({id:id,office:info().office,project:$("#m_n").value.trim(),client:$("#m_c").value,phone:"",address:"",discount:0,sup:0});db.cur=id;save();
+    });
+    render();return;
+  }
+  db.cur=+v;save();render();
+}
+function delProject(){
+  if(db.projects.length<2){alert("لا يمكن حذف المشروع الوحيد");return}
+  if(!confirm("حذف المشروع «"+info().project+"» بكل بياناته (بنود المقاولين والفواتير والدفعات والكشف)؟"))return;
+  var id=db.cur;
+  ["purchases","payments","petty","lines","cpays"].forEach(function(n){db[n]=db[n].filter(function(x){return x.p!=id})});
+  db.contractors.forEach(function(c){c.items=c.items.filter(function(x){return x.p!=id})});
+  db.projects=db.projects.filter(function(x){return x.id!=id});db.cur=db.projects[0].id;save();go("home");
+}
+
+/* ---------- نماذج ---------- */
+function modal(title,html,onSave){
+  window._save=onSave;
+  $("#modal").innerHTML='<div class="modal" onclick="if(event.target==this)closeM()"><div class="sheet"><h2>'+title+'</h2>'+html+'<div class="grid" style="margin-top:16px"><button class="btn o" onclick="closeM()">إلغاء</button><button class="btn" onclick="if(window._save()!==false)closeM()">حفظ</button></div></div></div>';
+}
+function closeM(){$("#modal").innerHTML="";render()}
+function fld(id,l,v,n){return '<label>'+l+'</label><input id="'+id+'" value="'+esc(v==null?"":v)+'"'+(n?' inputmode="decimal"':'')+'>'}
+function sel(id,l,list,v,blank){return '<label>'+l+'</label><select id="'+id+'">'+opts(list,v,blank)+'</select>'}
+
+function fContractor(id){
+  var c=id?find(db.contractors,id):{name:"",trade:"",phone:"",cat:""};
+  modal(id?"تعديل المقاول":"إضافة مقاول",fld("m_n","اسم المقاول",c.name)+fld("m_t","التخصص",c.trade)+fld("m_p","الهاتف",c.phone)+sel("m_c","البند المحاسبي",CATS,c.cat,"— اختر —"),function(){
+    if(!$("#m_n").value.trim())return false;
+    var o=c;if(!id){o={p:db.cur,id:nid(),items:[]};db.contractors.push(o)}
+    o.name=$("#m_n").value.trim();o.trade=$("#m_t").value;o.phone=$("#m_p").value;o.cat=$("#m_c").value;save();
+  });
+}
+function fItem(cid,iid){
+  var c=find(db.contractors,cid),i=iid?find(c.items,iid):{desc:"",unit:"",qty:"",price:"",prog:0};
+  modal(iid?"تعديل البند":"إضافة بند",fld("m_d","بيان العمل",i.desc)+fld("m_u","الوحدة",i.unit)+fld("m_q","الكمية",i.qty,1)+fld("m_pr","سعر الوحدة",i.price,1)+fld("m_g","نسبة الإنجاز %",Math.round(i.prog*100)||"",1),function(){
+    if(!$("#m_d").value.trim())return false;
+    var o=i;if(!iid){o={p:db.cur,id:nid()};c.items.push(o)}
+    o.desc=$("#m_d").value.trim();o.unit=$("#m_u").value;o.qty=num($("#m_q").value);o.price=num($("#m_pr").value);o.prog=Math.max(0,Math.min(1,num($("#m_g").value)/100));save();
+  });
+}
+function fSupplier(id){
+  var s=id?find(db.suppliers,id):{name:"",spec:"",phone:"",terms:"",cat:""};
+  modal(id?"تعديل المورد":"إضافة مورد",fld("m_n","اسم المورد",s.name)+fld("m_s","التخصص",s.spec)+fld("m_p","الهاتف",s.phone)+fld("m_t","شروط الدفع",s.terms)+sel("m_c","البند الافتراضي",CATS,s.cat,"— اختر —"),function(){
+    if(!$("#m_n").value.trim())return false;
+    var o=s;if(!id){o={p:db.cur,id:nid()};db.suppliers.push(o)}
+    o.name=$("#m_n").value.trim();o.spec=$("#m_s").value;o.phone=$("#m_p").value;o.terms=$("#m_t").value;o.cat=$("#m_c").value;save();
+  });
+}
+function fLine(id){
+  var l=id?find(db.lines,id):{cat:"",desc:"",unit:"",qty:"",price:""};
+  modal(id?"تعديل البند":"إضافة بند",sel("m_c","الفئة",CATS,l.cat,"— اختر —")+fld("m_d","بيان الأعمال",l.desc)+fld("m_u","الوحدة",l.unit)+fld("m_q","الكمية",l.qty,1)+fld("m_p","سعر الوحدة",l.price,1),function(){
+    if(!$("#m_d").value.trim()||!$("#m_c").value)return false;
+    var o=l;if(!id){o={p:db.cur,id:nid()};db.lines.push(o)}
+    o.cat=$("#m_c").value;o.desc=$("#m_d").value.trim();o.unit=$("#m_u").value;o.qty=num($("#m_q").value);o.price=num($("#m_p").value);save();
+  });
+}
+function fCpay(){
+  modal("إضافة دفعة من العميل",'<label>التاريخ</label><input type="date" id="m_dt" value="'+today()+'">'+fld("m_d","البيان","")+fld("m_a","المبلغ","",1)+sel("m_m","طريقة الدفع",METHODS,"")+fld("m_r","رقم الإيصال",V("cpays").length+1),function(){
+    var a=num($("#m_a").value);if(a<=0)return false;
+    db.cpays.push({p:db.cur,id:nid(),date:$("#m_dt").value||today(),desc:$("#m_d").value,method:$("#m_m").value,receipt:$("#m_r").value,amount:a});save();
+  });
+}
+function del(kind,id,extra){
+  if(!confirm("تأكيد الحذف؟"))return;
+  if(kind=="contractor"){db.contractors=db.contractors.filter(function(x){return x.id!=id});db.payments=db.payments.filter(function(p){return !(p.type=="c"&&p.payee==id)});save();return go("contractors")}
+  if(kind=="supplier"){db.suppliers=db.suppliers.filter(function(x){return x.id!=id});db.purchases=db.purchases.filter(function(p){return p.supplier!=id});db.payments=db.payments.filter(function(p){return !(p.type=="s"&&p.payee==id)});save();return go("suppliers")}
+  if(kind=="item"){var c=find(db.contractors,extra);c.items=c.items.filter(function(x){return x.id!=id})}
+  if(kind=="pay")db.payments=db.payments.filter(function(x){return x.id!=id});
+  if(kind=="pur")db.purchases=db.purchases.filter(function(x){return x.id!=id});
+  if(kind=="petty")db.petty=db.petty.filter(function(x){return x.id!=id});
+  if(kind=="line")db.lines=db.lines.filter(function(x){return x.id!=id});
+  if(kind=="cpay")db.cpays=db.cpays.filter(function(x){return x.id!=id});
+  save();render();
+}
+render();
+if('serviceWorker' in navigator)navigator.serviceWorker.register('sw.js').catch(function(){});
+</script>
+</body>
+</html>
